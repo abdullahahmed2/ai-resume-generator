@@ -1,0 +1,61 @@
+.pdf-uploader {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+}
+
+.pdf-uploader:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pdf-uploader .card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.pdf-uploader h5 {
+  margin: 0;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.upload-description {
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+}
+
+.upload-container {
+  padding: 1rem 0;
+}
+
+.upload-progress {
+  margin: 1rem 0;
+}
+
+.progress-text {
+  margin-top: 0.5rem;
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+.upload-btn {
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 250px;
+}
+
+.upload-note {
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  color: #6c757d;
+}
+
+@media (max-width: 576px) {
+  .upload-btn {
+    max-width: 100%;
+  }
+} 
