@@ -7,6 +7,9 @@ from .. import models, schemas
 from ..database import get_db
 from ..services import auth, resume
 from ..utils import pdf, pdf_parser
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/resume",
@@ -23,6 +26,64 @@ def create_resume(
 ):
     """Create a new resume."""
     return resume.create_resume(db=db, resume=resume_data, user_id=current_user.id)
+
+
+@router.post("/create_with_content", response_model=schemas.ResumeDetail)
+def create_resume_with_content(
+    resume_data: dict,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_active_user),
+):
+    """Create a new resume with content in one call."""
+    try:
+        # Create the base resume
+        resume_create = schemas.ResumeCreate(
+            title=resume_data.get("title", "My Resume"),
+            current_template_id=resume_data.get("current_template_id")
+        )
+        
+        db_resume = resume.create_resume(db=db, resume=resume_create, user_id=current_user.id)
+        
+        # If we have content, create the first version
+        if "content" in resume_data:
+            version_data = schemas.ResumeVersionCreate(
+                resume_id=db_resume.id,
+                version_number=1,
+                description="Initial version",
+                content=resume_data["content"]
+            )
+            
+            db_version = resume.create_resume_version(db=db, version=version_data)
+            
+            # Create a ResumeDetail object with the version
+            resume_detail = schemas.ResumeDetail(
+                id=db_resume.id,
+                title=db_resume.title,
+                user_id=db_resume.user_id,
+                current_template_id=db_resume.current_template_id,
+                created_at=db_resume.created_at,
+                updated_at=db_resume.updated_at,
+                versions=[db_version]
+            )
+            
+            return resume_detail
+        
+        # If no content, return just the resume
+        return schemas.ResumeDetail(
+            id=db_resume.id,
+            title=db_resume.title,
+            user_id=db_resume.user_id,
+            current_template_id=db_resume.current_template_id,
+            created_at=db_resume.created_at,
+            updated_at=db_resume.updated_at,
+            versions=[]
+        )
+    except Exception as e:
+        logger.error(f"Error creating resume: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to create resume: {str(e)}"
+        )
 
 
 @router.get("/list", response_model=List[schemas.Resume])

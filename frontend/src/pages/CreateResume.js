@@ -80,8 +80,8 @@ function CreateResume() {
         // Update existing resume
         response = await apiService.put(`/resume/${id}`, resumeData);
       } else {
-        // Create new resume
-        response = await apiService.post('/resume/create', resumeData);
+        // Create new resume with content
+        response = await apiService.createResumeWithContent(resumeData);
       }
       
       setSuccess(true);

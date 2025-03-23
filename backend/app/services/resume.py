@@ -29,7 +29,7 @@ def create_resume(db: Session, resume: schemas.ResumeCreate, user_id: int):
     db_resume = models.Resume(
         title=resume.title,
         user_id=user_id,
-        current_template_id=resume.template_id
+        current_template_id=resume.current_template_id
     )
     db.add(db_resume)
     db.commit()
@@ -42,7 +42,7 @@ def update_resume(db: Session, resume_id: int, resume_update: schemas.ResumeCrea
     db_resume = get_resume(db, resume_id, user_id)
     if db_resume:
         db_resume.title = resume_update.title
-        db_resume.current_template_id = resume_update.template_id
+        db_resume.current_template_id = resume_update.current_template_id
         db.commit()
         db.refresh(db_resume)
     return db_resume

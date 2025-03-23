@@ -55,6 +55,7 @@ export const apiService = {
   getResumes: () => apiClient.get('/resume/list'),
   getResume: (id) => apiClient.get(`/resume/${id}`),
   createResume: (data) => apiClient.post('/resume/create', data),
+  createResumeWithContent: (data) => apiClient.post('/resume/create_with_content', data),
   updateResume: (id, data) => apiClient.put(`/resume/${id}`, data),
   deleteResume: (id) => apiClient.delete(`/resume/${id}`),
   

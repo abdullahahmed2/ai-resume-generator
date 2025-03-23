@@ -65,8 +65,9 @@ class ResumeVersion(BaseModel):
     id: int
     resume_id: int
     version_number: Optional[int] = None
+    label: Optional[str] = None
+    content: Optional[str] = None
     created_at: datetime
-    updated_at: datetime
 
     class Config:
         orm_mode = True
@@ -78,8 +79,6 @@ class TemplateBase(BaseModel):
     description: str
     html_content: str
     css_content: str
-    role_type: Optional[str] = None
-    is_default: bool = False
 
 
 class TemplateCreate(TemplateBase):
@@ -88,8 +87,7 @@ class TemplateCreate(TemplateBase):
 
 class Template(TemplateBase):
     id: int
-    created_at: datetime
-    updated_at: datetime
+    is_active: bool = True
 
     class Config:
         orm_mode = True
@@ -101,20 +99,20 @@ class TemplateDetail(Template):
 
 
 # ShareLink schemas
-class ShareBase(BaseModel):
+class ShareLinkBase(BaseModel):
     resume_id: int
-    version_id: Optional[int] = None
-    expiration_date: Optional[datetime] = None
+    resume_version_id: Optional[int] = None
+    expires_at: Optional[datetime] = None
 
 
-class ShareCreate(ShareBase):
+class ShareLinkCreate(ShareLinkBase):
     pass
 
 
-class Share(ShareBase):
+class ShareLink(ShareLinkBase):
     id: int
-    user_id: int
-    share_token: str
+    token: str
+    is_active: bool
     created_at: datetime
 
     class Config:
@@ -194,6 +192,16 @@ class ResumeContent(BaseModel):
     education: List[Education] = []
     skills: List[str] = []
     projects: List[Project] = []
+
+
+# PDF Extract Response schema
+class PDFExtractResponse(BaseModel):
+    personal_info: Dict[str, str]
+    summary: str
+    skills: List[str]
+    work_experience: List[Dict[str, Any]]
+    education: List[Dict[str, Any]]
+    projects: List[Dict[str, Any]]
 
 
 # Update ResumeDetail to reference ResumeVersion
