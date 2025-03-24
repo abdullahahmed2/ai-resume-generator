@@ -33,7 +33,7 @@ logger.info(f"CORS allowed origins: {origins}")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['https://frontend.d2u29wywsqwu0k.amplifyapp.com/'],
+    allow_origins=["https://frontend.d2u29wywsqwu0k.amplifyapp.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
