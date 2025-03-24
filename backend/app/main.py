@@ -25,14 +25,15 @@ app = FastAPI(
 )
 
 # Configure CORS
-origins = [
-    "http://localhost:3000",  # React frontend
-    "http://localhost:8000",  # FastAPI backend (for development)
-]
+# Read allowed origins from environment variable, fallback to default list
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8000")
+origins = allowed_origins.split(",")
+
+logger.info(f"CORS allowed origins: {origins}")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=['https://frontend.d2u29wywsqwu0k.amplifyapp.com/'],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
