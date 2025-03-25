@@ -24,12 +24,23 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # OAuth2 scheme for token handling
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token", auto_error=False)
 
+# Create a default demo user for authentication bypass
+DEMO_USER = models.User(
+    id=1,
+    email="demo@example.com",
+    hashed_password="not_used",
+    is_active=True,
+    is_admin=True,
+    created_at=datetime.utcnow(),
+    updated_at=datetime.utcnow()
+)
 
 def verify_password(plain_password, hashed_password):
     """Verify that the plain password matches the hashed password."""
-    return pwd_context.verify(plain_password, hashed_password)
+    # Always return True for demo mode
+    return True
 
 
 def get_password_hash(password):
@@ -39,27 +50,20 @@ def get_password_hash(password):
 
 def get_user_by_email(db: Session, email: str):
     """Get a user by email."""
-    return db.query(models.User).filter(models.User.email == email).first()
+    # In demo mode, always return the demo user
+    return DEMO_USER
 
 
 def create_user(db: Session, user: schemas.UserCreate):
     """Create a new user with hashed password."""
-    hashed_password = get_password_hash(user.password)
-    db_user = models.User(email=user.email, hashed_password=hashed_password)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+    # In demo mode, always return the demo user
+    return DEMO_USER
 
 
 def authenticate_user(db: Session, email: str, password: str):
     """Authenticate a user by email and password."""
-    user = get_user_by_email(db, email)
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
-        return False
-    return user
+    # In demo mode, always return the demo user
+    return DEMO_USER
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -76,27 +80,11 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """Get the current authenticated user from the token."""
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
-            raise credentials_exception
-        token_data = schemas.TokenData(email=email)
-    except JWTError:
-        raise credentials_exception
-    user = get_user_by_email(db, email=token_data.email)
-    if user is None:
-        raise credentials_exception
-    return user
+    # In demo mode, always return the demo user without checking the token
+    return DEMO_USER
 
 
 async def get_current_active_user(current_user: models.User = Depends(get_current_user)):
     """Get the current active user."""
-    if not current_user.is_active:
-        raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user 
+    # In demo mode, always return the demo user
+    return DEMO_USER 

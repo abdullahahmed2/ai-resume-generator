@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+// Import still needed for type definition but we won't use it for API calls
 import { authAPI } from '../services/api';
 
 // Create the auth context
@@ -8,86 +9,52 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
+// Demo user for bypassing auth
+const DEMO_USER = {
+  id: 1,
+  email: "demo@example.com",
+  is_active: true,
+  is_admin: true
+};
+
 export function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(DEMO_USER);
+  const [loading, setLoading] = useState(false);  // Start with false as we don't need to load
   const [error, setError] = useState(null);
 
-  // Check if user is logged in on initial load
+  // Auto-login with demo user
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetchUserProfile();
-    } else {
-      setLoading(false);
-    }
+    // Store a fake token to maintain the appearance of being logged in
+    localStorage.setItem('token', 'demo_token');
+    // Demo user is already set in state
   }, []);
 
-  // Fetch the user's profile from the API
+  // Fetch the user's profile from the API - not used in demo mode
   const fetchUserProfile = async () => {
-    try {
-      setLoading(true);
-      const response = await authAPI.getUser();
-      setCurrentUser(response.data);
-      setError(null);
-    } catch (err) {
-      console.error('Error fetching user profile:', err);
-      setError('Failed to fetch user profile');
-      // If the token is invalid, clear it
-      if (err.response && (err.response.status === 401 || err.response.status === 403)) {
-        logout();
-      }
-    } finally {
-      setLoading(false);
-    }
+    // In demo mode, simply return the demo user
+    return DEMO_USER;
   };
 
-  // Register a new user
+  // Register a new user - simplified in demo mode
   const register = async (email, password) => {
-    try {
-      setLoading(true);
-      const response = await authAPI.register({ email, password });
-      return response.data;
-    } catch (err) {
-      console.error('Registration error:', err);
-      const errorMessage = err.response?.data?.detail || 'Registration failed';
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    } finally {
-      setLoading(false);
-    }
+    // Simulate successful registration
+    setCurrentUser(DEMO_USER);
+    localStorage.setItem('token', 'demo_token');
+    return DEMO_USER;
   };
 
-  // Log in a user
+  // Log in a user - simplified in demo mode
   const login = async (email, password) => {
-    try {
-      setLoading(true);
-      const response = await authAPI.login({
-        username: email, // FastAPI OAuth2 expects 'username' field
-        password: password,
-      });
-      
-      const { access_token } = response.data;
-      localStorage.setItem('token', access_token);
-      
-      // Fetch the user profile after successful login
-      await fetchUserProfile();
-      return true;
-    } catch (err) {
-      console.error('Login error:', err);
-      const errorMessage = err.response?.data?.detail || 'Login failed';
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    } finally {
-      setLoading(false);
-    }
+    // Simulate successful login
+    setCurrentUser(DEMO_USER);
+    localStorage.setItem('token', 'demo_token');
+    return true;
   };
 
-  // Log out a user
+  // Log out a user - simplified in demo mode
   const logout = () => {
-    localStorage.removeItem('token');
-    setCurrentUser(null);
-    setError(null);
+    // In demo mode, we don't actually log out
+    // Just redirect to login page which will auto-login again
   };
 
   // Clear any auth errors

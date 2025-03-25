@@ -16,19 +16,17 @@ function App() {
           <Navbar />
           <main className="main-content">
             <Routes>
-              {/* Public routes */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              {/* Public routes - kept for appearances but will auto-redirect to dashboard */}
+              <Route path="/login" element={<Navigate to="/dashboard" />} />
+              <Route path="/register" element={<Navigate to="/dashboard" />} />
               
-              {/* Protected routes */}
-              <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-                {/* Add these routes as we develop the components */}
-                {/* <Route path="/resume/new" element={<CreateResume />} /> */}
-                {/* <Route path="/resume/edit/:id" element={<EditResume />} /> */}
-                {/* <Route path="/resume/share/:id" element={<ShareResume />} /> */}
-                {/* <Route path="/templates" element={<Templates />} /> */}
-              </Route>
+              {/* All routes now act as if they're protected */}
+              <Route path="/dashboard" element={<Dashboard />} />
+              {/* Add these routes as we develop the components */}
+              {/* <Route path="/resume/new" element={<CreateResume />} /> */}
+              {/* <Route path="/resume/edit/:id" element={<EditResume />} /> */}
+              {/* <Route path="/resume/share/:id" element={<ShareResume />} /> */}
+              {/* <Route path="/templates" element={<Templates />} /> */}
               
               {/* Default route */}
               <Route path="*" element={<Navigate to="/dashboard" />} />
