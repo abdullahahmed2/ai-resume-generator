@@ -1,0 +1,109 @@
+.view-resume-container {
+  padding: 30px 0 50px;
+}
+
+.back-btn {
+  margin-bottom: 15px;
+}
+
+.resume-header {
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+  border: none;
+}
+
+.resume-title {
+  font-size: 1.8rem;
+  margin: 0;
+  color: #333;
+  font-weight: 600;
+}
+
+.resume-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  font-weight: 500;
+}
+
+.resume-preview-container {
+  background-color: #f8f9fa;
+  padding: 30px;
+  border-radius: 8px;
+  margin-bottom: 50px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: center;
+}
+
+.resume-preview {
+  background-color: white;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+  width: 21cm;  /* A4 width */
+  min-height: 29.7cm; /* A4 height */
+  padding: 1.5cm;
+  margin: 0 auto;
+}
+
+.share-link-input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.spinner-container {
+  padding: 50px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 992px) {
+  .resume-preview {
+    width: 100%;
+    padding: 1cm;
+  }
+  
+  .resume-preview-container {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .resume-header .d-flex {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .resume-actions {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .resume-title {
+    text-align: center;
+  }
+}
+
+@media print {
+  .back-btn, .resume-header, .action-btn {
+    display: none !important;
+  }
+  
+  .resume-preview-container {
+    padding: 0;
+    box-shadow: none;
+    background-color: white;
+  }
+  
+  .resume-preview {
+    box-shadow: none;
+    padding: 0;
+  }
+} 
